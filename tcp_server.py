@@ -9,7 +9,7 @@ IP = socket.gethostbyname(socket.gethostname())
 PORT = int(sys.argv[1])
 # print(f"PORT -> {PORT}")
 ADDR = (IP, PORT)
-SIZE = 1024
+SIZE = 1024*1024
 FORMAT = "utf-8"
 dirPath=sys.argv[2]
 # print(f"dirPath -> {dirPath}")
