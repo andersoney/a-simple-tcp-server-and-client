@@ -1,7 +1,15 @@
 import socket
 import threading
-IP = socket.gethostbyname(socket.gethostname())
-PORT = 4455
+import sys
+
+
+# IP = socket.gethostbyname(socket.gethostname())
+IP = sys.argv[1]
+# print(IP);
+# PORT = 9089
+PORT = int(sys.argv[2])
+fileName=sys.argv[3]
+
 ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
@@ -56,6 +64,7 @@ def downloadFile(fileName):
     file.write(msg)
     file.close()
     client.close()
+    print(f"{fileName} saved");
     pass;
 
 
@@ -72,7 +81,7 @@ class ThreadProcess (threading.Thread):
         downloadFile(self.fileName);
         pass;
 
-def main():
+def test():
     threadM = ThreadProcess(1, "Thread-1", 1,"makefile")
     thread1 = ThreadProcess(2, "Thread-2", 2,"1.log")
     thread2 = ThreadProcess(2, "Thread-2", 2,"2.log")
@@ -83,10 +92,13 @@ def main():
     thread2.start()
     thread3.start()
     thread4.start()
-    fileName="makefile"
-    uploadFile(fileName);
-    downloadFileList();
-    downloadFile(fileName);
+    pass;
+
+def main(fileName):
+    if(fileName=="list"):
+        downloadFileList();
+    else:
+        downloadFile(fileName);
     
 if __name__ == "__main__":
-    main()
+    main(fileName)

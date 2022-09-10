@@ -1,13 +1,19 @@
 import os
 import socket
 import threading
+import sys
+
+
 IP = socket.gethostbyname(socket.gethostname())
-PORT = 4455
+# PORT = 4455
+PORT = int(sys.argv[1])
+# print(f"PORT -> {PORT}")
 ADDR = (IP, PORT)
 SIZE = 1024
 FORMAT = "utf-8"
-dirPath="dir_path"
-cacheSize= 250
+dirPath=sys.argv[2]
+# print(f"dirPath -> {dirPath}")
+cacheSize= 1024*1024*64
 lock = threading.Lock()
 class  Cache:
     def __init__(self) -> None:
@@ -34,7 +40,7 @@ class  Cache:
         key=self.fileNames[0];
         self.fileNames = self.fileNames[1:];
         self.cache.pop(key)
-        print(f"REMOVING -> {key}")
+        # print(f"REMOVING -> {key}")
         pass;
     def size(self):
         size=0;
@@ -96,7 +102,7 @@ class ThreadProcess (threading.Thread):
             pass;
         else:
             print(f"Cache miss. {fileName} sent to the client")
-            filePath="dir_path/"+fileName
+            filePath=f"{dirPath}/{fileName}"
             file = open(filePath, "r")
             data = file.read()
             myCache.add(fileName,data);
@@ -107,7 +113,7 @@ class ThreadProcess (threading.Thread):
         pass;
     def uploadFile(self,conn):
         msg = conn.recv(SIZE).decode(FORMAT)
-        file = open("./dir_path/"+msg, "w")
+        file = open(f"./{dirPath}/{msg}", "w")
         conn.send("Filename received.".encode(FORMAT))
         data = conn.recv(SIZE).decode(FORMAT)
         file.write(data)
@@ -116,11 +122,11 @@ class ThreadProcess (threading.Thread):
         pass;
 
 def main():
-    print("[STARTING] Server is starting.")
+    # print("[STARTING] Server is starting.")
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(ADDR)
     server.listen()
-    print("[LISTENING] Server is listening.")
+    # print("[LISTENING] Server is listening.")
     while True:
         conn, addr = server.accept()
         thread1 = ThreadProcess(1, "Thread-1", 1,conn,addr)
